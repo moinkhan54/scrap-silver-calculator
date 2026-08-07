@@ -50,6 +50,48 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // Helper to extract metal price in USD from metals-api.com rates format
+  function extractMetalPrice(rates, symbol) {
+    if (!rates) return null;
+    const directUsd = rates[`USD${symbol}`];
+    if (directUsd && directUsd > 1) return directUsd;
+    const rate = rates[symbol];
+    if (rate && rate > 0) {
+      return rate < 1 ? (1 / rate) : rate;
+    }
+    return null;
+  }
+
+  // ---- 0. Metals-API.com (Primary if key is configured or provided) ----
+  const metalsApiKey = req.query?.access_key || process.env.METALS_API_KEY || process.env.METALS_API_ACCESS_KEY;
+  if (metalsApiKey) {
+    try {
+      const maData = await tryFetchJSON(
+        `https://metals-api.com/api/latest?access_key=${encodeURIComponent(metalsApiKey)}&base=USD&symbols=XAG,XAU,XPT,XPD`
+      );
+      if (maData?.success && maData?.rates) {
+        const silver = extractMetalPrice(maData.rates, 'XAG');
+        const gold = extractMetalPrice(maData.rates, 'XAU');
+        const platinum = extractMetalPrice(maData.rates, 'XPT');
+        const palladium = extractMetalPrice(maData.rates, 'XPD');
+
+        if (silver && silver > 1) {
+          console.log(`✅ Metals-API.com: Ag=$${silver}`);
+          return res.status(200).json({
+            silver: Math.round(silver * 100) / 100,
+            gold: gold ? Math.round(gold * 100) / 100 : FALLBACK_GOLD,
+            platinum: platinum ? Math.round(platinum * 100) / 100 : FALLBACK_PLATINUM,
+            palladium: palladium ? Math.round(palladium * 100) / 100 : FALLBACK_PALLADIUM,
+            source: 'metals-api.com',
+            ts: Date.now()
+          });
+        }
+      }
+    } catch (e) {
+      console.error('[Metals-API] ', e.message);
+    }
+  }
+
   // ---- 1. Stooq.com (CSV — very reliable, free, no auth) ----
   try {
     const ctrl = new AbortController();

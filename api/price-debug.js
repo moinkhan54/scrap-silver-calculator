@@ -72,7 +72,20 @@ module.exports = async function handler(req, res) {
     timeout: 4000
   });
 
-  // Test 7: ExchangeRate API (control test - should work)
+  // Test 7: Metals-API symbols
+  const testKey = req.query?.access_key || process.env.METALS_API_KEY || process.env.METALS_API_ACCESS_KEY || 'demo';
+  results['Metals-API (symbols)'] = await testAPI('metals-api-symbols', `https://metals-api.com/api/symbols?access_key=${testKey}`, {
+    headers: HEADERS,
+    timeout: 5000
+  });
+
+  // Test 8: Metals-API latest rates
+  results['Metals-API (latest)'] = await testAPI('metals-api-latest', `https://metals-api.com/api/latest?access_key=${testKey}&base=USD&symbols=XAG,XAU`, {
+    headers: HEADERS,
+    timeout: 5000
+  });
+
+  // Test 9: ExchangeRate API (control test - should work)
   results['ExchangeRate-API (control)'] = await testAPI('exchange', 'https://api.exchangerate-api.com/v4/latest/USD', {
     headers: HEADERS,
     timeout: 4000
