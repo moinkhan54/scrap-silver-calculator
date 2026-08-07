@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
-const MONETAG_CODE = '7618a273914ca72107970b18e3d42df9';
+const MONETAG_CODE = 'cfd5c720a79c91dd97ee394b8febec27';
 const MONETAG_TAG = `  <meta name="monetag" content="${MONETAG_CODE}">`;
 
 // Skip utility/scratch files
