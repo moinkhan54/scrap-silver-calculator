@@ -10,7 +10,7 @@ const path = require('path');
 
 const ROOT = __dirname;
 const MONETAG_CODE = 'cfd5c720a79c91dd97ee394b8febec27';
-const MONETAG_SCRIPT = `<script>(function(s){s.dataset.zone='11529874',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>`;
+const MONETAG_SCRIPT = `<script>(function(s){s.dataset.zone='11532642',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>`;
 const MONETAG_TAG = `  <meta name="monetag" content="${MONETAG_CODE}">\n  ${MONETAG_SCRIPT}`;
 
 // Skip utility/scratch files
@@ -51,9 +51,9 @@ htmlFiles.forEach(filePath => {
   let html;
   try { html = fs.readFileSync(filePath, 'utf8'); } catch { return; }
 
-  // First, strip out any existing monetag tags and nap5k scripts anywhere in the file
+  // First, strip out any existing monetag tags and monetag scripts anywhere in the file
   let cleaned = html.replace(/<meta\s+name=["']monetag["']\s+content=["'][^"']*["']\s*\/?>\r?\n?/gi, '');
-  cleaned = cleaned.replace(/<script>[^<]*nap5k\.com[^<]*<\/script>\r?\n?/gi, '');
+  cleaned = cleaned.replace(/<script>[^<]*(?:nap5k\.com|n6wxm\.com)[^<]*<\/script>\r?\n?/gi, '');
 
   // Inject at the VERY TOP of <head> (right after <head>)
   let updated = cleaned;
