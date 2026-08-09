@@ -9,12 +9,12 @@
    ============================================ */
 
 const SilverPrice = (() => {
-  const FALLBACK_PRICE     = 58.00;   // Fallback — shown only if all live sources fail (updated June 29, 2026)
-  const FALLBACK_GOLD      = 2395.00; // Fallback gold price (updated June 29, 2026)
-  const FALLBACK_PLATINUM  = 945.00;  // Fallback platinum price (updated June 29, 2026)
-  const FALLBACK_PALLADIUM = 925.00;  // Fallback palladium price (updated June 29, 2026)
-  const CACHE_KEY        = 'silverSpotCacheV2';
-  const CACHE_DURATION   = 60 * 60 * 1000; // 1 hour (matches Edge cache)
+  const FALLBACK_PRICE     = 63.50;   // Fallback — shown only if all live sources fail (updated August 2026)
+  const FALLBACK_GOLD      = 4340.00; // Fallback gold price (updated August 2026)
+  const FALLBACK_PLATINUM  = 1750.00; // Fallback platinum price (updated August 2026)
+  const FALLBACK_PALLADIUM = 1395.00; // Fallback palladium price (updated August 2026)
+  const CACHE_KEY        = 'silverSpotCacheV3';
+  const CACHE_DURATION   = 15 * 60 * 1000; // 15 minutes
 
   let currentPrice          = FALLBACK_PRICE;
   let currentGoldPrice      = FALLBACK_GOLD;
@@ -93,7 +93,18 @@ const SilverPrice = (() => {
       }
     }
 
-    // ---- Source 2: goldprice.org — may work from browser context ----
+    // ---- Source 2: Gold-API.com direct ----
+    try {
+      const gaData = await tryFetch('https://api.gold-api.com/price/XAG');
+      if (gaData?.price > 0) {
+        console.log(`✅ Gold-API.com: $${gaData.price}`);
+        return { silver: gaData.price };
+      }
+    } catch (e) {
+      console.debug('[Gold-API] ', e.message);
+    }
+
+    // ---- Source 3: goldprice.org — may work from browser context ----
     try {
       const gpData = await tryFetch('https://data-asg.goldprice.org/dbXRates/USD', { mode: 'cors' });
       if (gpData?.items?.[0]?.xagPrice > 0) {
@@ -105,7 +116,7 @@ const SilverPrice = (() => {
       console.debug('[goldprice] ', e.message);
     }
 
-    // ---- Source 3: metals.live — alternate endpoints ----
+    // ---- Source 4: metals.live — alternate endpoints ----
     for (const endpoint of [
       'https://metals.live/api/v1/spot',
       'https://api.metals.live/v1/spot'

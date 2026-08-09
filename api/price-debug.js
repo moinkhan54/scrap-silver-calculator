@@ -36,32 +36,14 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Test 1: GoldAPI.io
-  results['GoldAPI.io'] = await testAPI('GoldAPI', 'https://www.goldapi.io/api/XAG/USD', {
-    headers: { ...HEADERS, 'x-access-token': 'goldapi-1230smo2lqnxm-io' },
-    timeout: 5000
-  });
-
-  // Test 2: metals.live main
-  results['metals.live (main)'] = await testAPI('metals.live', 'https://metals.live/api/v1/spot', {
+  // Test 1: Gold-API.com
+  results['Gold-API.com'] = await testAPI('Gold-API', 'https://api.gold-api.com/price/XAG', {
     headers: HEADERS,
     timeout: 5000
   });
 
-  // Test 3: metals.live alt
-  results['metals.live (alt)'] = await testAPI('metals.live-alt', 'https://api.metals.live/v1/spot', {
-    headers: HEADERS,
-    timeout: 5000
-  });
-
-  // Test 4: goldprice.org
-  results['goldprice.org'] = await testAPI('goldprice', 'https://data-asg.goldprice.org/dbXRates/USD', {
-    headers: { ...HEADERS, 'Referer': 'https://www.goldprice.org/' },
-    timeout: 5000
-  });
-
-  // Test 5: Yahoo Finance
-  results['Yahoo Finance'] = await testAPI('yahoo', 'https://query1.finance.yahoo.com/v8/finance/chart/XAG=X?interval=1d&range=1d', {
+  // Test 2: Yahoo Finance (SI=F futures)
+  results['Yahoo Finance (SI=F)'] = await testAPI('yahoo-futures', 'https://query1.finance.yahoo.com/v8/finance/chart/SI=F?interval=1d&range=1d', {
     headers: HEADERS,
     timeout: 5000
   });

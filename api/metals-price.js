@@ -3,7 +3,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const FALLBACK = { silver: 58.00, gold: 2395.00, platinum: 945.00, palladium: 925.00 };
+  const FALLBACK = { silver: 63.50, gold: 4340.00, platinum: 1750.00, palladium: 1395.00 };
 
   const accessKey = req.query?.access_key || process.env.METALS_API_KEY || process.env.METALS_API_ACCESS_KEY;
   if (accessKey) {
@@ -39,6 +39,30 @@ module.exports = async function handler(req, res) {
     } catch (e) {
       console.error('[metals-api.com handler]', e.message);
     }
+  }
+
+  // Gold-API.com
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const resGa = await fetch('https://api.gold-api.com/price/XAG', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (resGa.ok) {
+      const gaData = await resGa.json();
+      if (gaData?.price > 1) {
+        console.log(`✅ Gold-API.com: Ag=$${gaData.price}`);
+        return res.status(200).json({
+          silver: Math.round(gaData.price * 100) / 100,
+          gold: FALLBACK.gold,
+          platinum: FALLBACK.platinum,
+          palladium: FALLBACK.palladium,
+          source: 'gold-api.com',
+          ts: Date.now()
+        });
+      }
+    }
+  } catch (e) {
+    console.error('[Gold-API handler]', e.message);
   }
 
   // Try multiple endpoints with proper error handling
@@ -83,4 +107,4 @@ module.exports = async function handler(req, res) {
 
   console.warn('⚠️ metals.live unavailable — using fallback');
   return res.status(200).json({ ...FALLBACK, source: 'fallback', ts: Date.now() });
-}
+};
