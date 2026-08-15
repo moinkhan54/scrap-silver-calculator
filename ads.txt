@@ -1,2 +1,1 @@
-google.com, pub-5307005898686879, DIRECT, f08c47fec0942fa0
-
+https://adstxt.journeymv.com/sites/8deef722-d364-4217-a719-9fd0419f404b/ads.txt
