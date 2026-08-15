@@ -11,9 +11,7 @@ const path = require('path');
 
 const ROOT = __dirname;
 const ADSENSE_TAG = `  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5307005898686879"
-     crossorigin="anonymous"></script>`;
-
+ 
 const LANG_DIRS = ['ar','de','es','fr','hi','it','pt','ru','tr','ur','zh'];
 
 // Skip utility/scratch files
