@@ -199,6 +199,9 @@ openx.com, 537145117, RESELLER, 6a698e2ec38604c6
 
 
 moneytizers.
+improvedigital.com, 1602_132501, DIRECT
+improvedigital.com, 1033_132501, DIRECT
+connectad.io,586,RESELLER,85ac85a30c93b3e5
 MANAGERDOMAIN=themoneytizer.com
 themoneytizer.com,132501,DIRECT
 improvedigital.com, 1602_132501, DIRECT
